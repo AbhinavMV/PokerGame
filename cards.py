@@ -8,9 +8,14 @@ class Card(object):
         self.value=value
         self.suit=suit
         self.rank=rank
+        self.showing = False
 
-    def show(self):
-        print(f"{self.value} of {self.suit}")
+    
+    def __repr__(self):
+        return str(self.value)+ " of " + self.suit + " Rank:"+str(self.rank)
+
+    def __lt__(self,other):
+        return self.rank < other.rank
 
 class Deck(object):
     def __init__(self):
@@ -36,7 +41,7 @@ class Deck(object):
 
     def printDeck(self):
         for card in self.cards:
-            card.show()
+            print(card)
 
     def pickACard(self):
         try:
@@ -48,8 +53,4 @@ class Deck(object):
     def __len__(self):
         return len(self.cards)
 
-d = Deck()
-d.shuffleDeck()
-d.printDeck()
-
-    
+deck = Deck()
