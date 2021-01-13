@@ -1,13 +1,13 @@
-from scores import PokerScore
 class Player(object):
-    def __init__(self,name,hand):
+    def __init__(self,name,cards):
         self.name = name
-        self.hand = hand
-        self.handScore = PokerScore(hand)
+        for i in cards.hand:
+            i.showing = True
+        self.hand = cards
     
     def __repr__(self):
         return self.name
 
-    def __lt__(self,other):
-        return self.hand < other.hand
+    # def __lt__(self,other):
+    #     return self.handScore < other.handScore
 

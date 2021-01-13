@@ -1,76 +1,16 @@
 from cards import deck,Card
 from players import Player
-from scores import PokerScore
-from collections import Counter
+
 from hand import Hand
 
-def compare(obj1,obj2):
-    if obj1.handScore.score[1] > obj2.handScore.score[1]:
-        return obj1,obj2
-    elif obj1.handScore.score[1] < obj2.handScore.score[1]:
-        return obj2,obj1
-    else:
-        hand1 = obj1.handScore.highestCard
-        hand2 = obj2.handScore.highestCard
-        score = obj1.handScore.score
-        # To convert the sequence to 5 4 3 2 Ace 
-        if hand1[0].rank==14 and hand1[-1].rank==2:
-                a = hand1.pop(0)
-                hand1.append(a)
-
-        if hand2[0].rank==14 and hand2[-1].rank==2:
-            a = hand2.pop(0)
-            hand2.append(a)
-            # print(hand2)
-        #Royal Flush
-        if score[1] == 10:
-            return compareSuitOnly(obj1,obj2)
-        #Straight Flush 
-        if score[1] == 9:
-            for i in range(len(hand1)):
-                if hand1[i].rank == hand2[i].rank:
-                    continue
-                elif hand1[i].rank > hand2[i].rank:
-                    return obj1,obj2
-                else: 
-                    return obj2,obj1
-            return compareSuitOnly(obj1,obj2)
-        # Rest of them 
-        if 0<score[1]<9:
-            return comparePairsValue(obj1,obj2)
-
-
-def comparePairsValue(hand1,hand2):
-    reducedList1 = sorted(Counter([i.rank for i in hand1.handScore.highestCard]).most_common(),key=lambda x: (x[1],x[0]),reverse=True)
-    reducedList2 = sorted(Counter([i.rank for i in hand2.handScore.highestCard]).most_common(),key=lambda x: (x[1],x[0]),reverse=True)
-    if reducedList1[0][0] == 14 and reducedList1[1][0]==5 and reducedList1[-1][0]==2 and reducedList1[0][1]==1:
-        a = reducedList1.pop(0)
-        reducedList1.append(a)
-    if reducedList2[0][0] == 14 and reducedList2[1][0]==5 and reducedList2[-1][0]==2 and reducedList2[0][1]==1:
-        a = reducedList2.pop(0)
-        reducedList2.append(a)
-    print(reducedList1,reducedList2)
-    for i in range(0,len(reducedList1)):
-        if reducedList1[i][0] == reducedList2[i][0]:
-            continue
-        elif reducedList1[i][0] > reducedList2[i][0]:
-            return hand1,hand2
-        elif reducedList1[i][0] < reducedList2[i][0]:
-            return hand2,hand1
-    return compareSuitOnly(hand1,hand2)
-
-def compareSuitOnly(hand1,hand2):
-    suits = {'Spades':4,'Hearts':3,'Diamonds':2,'Clubs':1}
-    if suits[hand1.handScore.highestCard[0].suit] > suits[hand2.handScore.highestCard[0].suit]:
-        return hand1,hand2
-    return hand2,hand1
 
 def sortDict(data):
     temp = data
     n = len(temp)
     for i in range(n):
         for j in range(i+1,n):
-            temp[i],temp[j] = compare(temp[i],temp[j])         
+            if not (temp[i].hand.compareTo(temp[j].hand)):
+                temp[i],temp[j] = temp[j],temp[i]        
     return temp
 
 deck.shuffleDeck()
@@ -85,18 +25,18 @@ card = [['ah','3h','4h','9h','th'],['8h','8s','jh','jd','4c'],['2s','2d','2c','2
 for player in card:
     h = []
     for i in player:
-        h.append(Card(i[0],suit[i[1]],suit[i[0]]))
-    playerData.append(Player(chr(name),h))
+        h.append(Card(suit[i[0]],suit[i[1]]))
+    playerData.append(Player(chr(name),Hand(h)))
     name += 1
     # hand = [deck.pickACard() for i in range(5)]
     # playerData.append(Player(chr(name),hand))
     # name=name+1
 
-for i in playerData:
-    print(i,i.handScore,i.hand)
+# for i in playerData:
+#     print(i,i.handScore,i.hand)
 print(sortDict(playerData))
 for i in playerData:
-    print(i.handScore)
+    print(i,i.hand)
 
 
 

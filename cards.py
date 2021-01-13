@@ -1,18 +1,28 @@
 from random import shuffle
 
 class Card(object):
-    def __init__(self,value,suit,rank):
+    def __init__(self,rank,suit):
         """
         docstring
         """
-        self.value=value
         self.suit=suit
         self.rank=rank
-        self.showing = False
-
+        self.showing = True     #for testing set to True
     
     def __repr__(self):
-        return str(self.value)+ " of " + self.suit + " Rank:"+str(self.rank)
+        if self.showing:
+            if 2<=self.rank<=10:
+                return str(self.rank)+ " of " + self.suit 
+            elif self.rank==11:
+                return "Jack of " + self.suit 
+            elif self.rank==12:
+                return "Queen of " + self.suit 
+            elif self.rank==13:
+                return "King of " + self.suit
+            elif self.rank==14:
+                return "Ace of " + self.suit
+        else:
+            return 'Card' 
 
     def __lt__(self,other):
         return self.rank < other.rank
@@ -23,18 +33,14 @@ class Deck(object):
         docstring
         """
         self.cards=[]
-        self.suits=['Spades','Hearts','Diamonds','Clubs']
-        self.specialCards=['Jack','Queen','King','Ace']
+        self.suits={'Spades':4,'Hearts':3,'Diamonds':2,'Clubs':1}
         self.buildDeck()
 
     def buildDeck(self):
         for suit in self.suits:
-            for i in range(2,11):
-                self.cards.append(Card(i,suit,i))
-
-            for j in self.specialCards:
-                self.cards.append(Card(j,suit,i+1))
-                i=i+1       
+            for i in range(2,15):
+                self.cards.append(Card(i,suit))
+   
     
     def shuffleDeck(self):
         shuffle(self.cards)
@@ -52,5 +58,8 @@ class Deck(object):
 
     def __len__(self):
         return len(self.cards)
+    
+    def __repr__(self):
+        return str(self.cards)
 
 deck = Deck()
